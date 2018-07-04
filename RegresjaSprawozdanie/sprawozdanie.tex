@@ -48,6 +48,9 @@ ARR
 \section{Miary skuteczności modelu}
 	Do porównywania jakości regresji liniowej wykorzystano błąd MSE (błąd średnio kwadratowy) oraz współczynnik determinacji $R^2$ (najlepsza wartość 1.0). W obliczaniu skuteczności modelu zostanie wykorzystana walidacja krzyżowa z pięcioma iteracjami.
 
+\section{Metoda}
+	Zastosowano metodę LinearRegresion z biblioteki sklearn z pakietu linear\_model.
+
 \section{Przygotowanie danych}
 	Z danych usunięto wiersze, w których brakowało rekordów lub posiadały one błędną formę.
 	
@@ -63,13 +66,15 @@ ARR
 		\begin{tabular}{lll}
 			Usunięto	&	MSE		&	$R^2$\\
 			Nic			&	-5134398	&	-0.08\\
-			Rekordy z ceną powyżej 2000\$ \\
-			na podstawie histogramów \ref{hist} 
-			oraz \ref{hist10k}	&	-113938	&	0.29\\
+			Cena powyżej 2000\$ \ref{price}	&	-113938	&	0.29\\
 			Sprzedaż powyżej jednej osoby \ref{wiecej_niz_jeden}
 			&	-96511	&	0.33\\		
 			
 		\end{tabular}
+	
+		\subsubsection{Cena}
+		\label{price}
+		Histogram \ref{hist} pokazuje rozkład ceny bez edycji, po usunięciu rekordów powyżej 10 tys. otrzymujemy \ref{hist10k} a gdy usunięto wartości powyżej 2 tys. \ref{hist2} i dopiero ten rozkład cen przypomina normalny dlatego zdecydowano się na przedział do 2 tys.
 		
 		\subsubsection{Sprzedaż w zestawach}
 		\label{wiecej_niz_jeden}
@@ -87,6 +92,12 @@ ARR
 					\includegraphics[scale=0.6]{obrazy/hist10.png} 
 					\caption{histogram cen w przedziale do 10 tys.}
 					\label{hist10k}
+		\end{figure}
+		\begin{figure}[h]
+			\centering
+			\includegraphics[scale=0.6]{obrazy/hist2.png} 
+			\caption{histogram cen w przedziale do 2 tys.}
+			\label{hist10k}
 		\end{figure}
 		
 \section{Analiza błędów}
@@ -167,7 +178,7 @@ ARR
 		\caption{Wykres błędu MSE dla zbioru treningowego i walidacyjnego w zależności od wielkości zbioru treningowego dla nowo wybranych cech}
 		\label{learning_curve_new}
 	\end{figure}	
-	Na podstawie krzywej uczenia przedstawionej na rysunku \ref{learning_curve_new} wyznaczonej dla modelu wyszkolonego dla wszystkich nowo wybranych cech można stwierdzić, że badany problem jest obciążony wysokim odchyleniem i prawdopodobnie, aby model lepiej odzwierciedlał rzeczywistość, należałoby go wyposażyć w dodatkowe cechy, które nie są zawarte w zbiorze, na którym odbyło się badanie np. wzrost i waga mogłyby wiele powiedzieć o kondycji sprzedanej osoby.
+	Na podstawie krzywej uczenia przedstawionej na rysunku \ref{learning_curve_new} wyznaczonej dla modelu wyszkolonego dla wszystkich nowo wybranych cech można stwierdzić, że dostarczenie większej ilości danych powinno spowodować poprawę modelu.
 	
 	Najlepszy wynik to MSE = 81009, $R^2$ = 0.44 oraz 73 średni błąd 73 (MSE przez wielkość zbioru walidacyjnego).
 	
@@ -179,7 +190,7 @@ ARR
 			\caption{Przewidywane i prawdziwe wartości ceny w zależności od wieku dla zbioru testowego}
 			\label{test_predict}
 		\end{figure}	
-		Przewidywanie ceny niewolnika wymaga wielu parametrów i jest obarczone dużym błędem, należy się spodziewać, że znaczny wpływ na cenę miały niepodane dane jak wzrost, waga. Otrzymana wartość MSE względem ilości prób testowych pokazuje wzrost błędu dla przypadku testowego względem walidacyjnego. Oznacza to, że model ma pewne problemy z generalizowaniem zagadnienia pomimo wykorzystania zbioru walidacyjnego. Z drugiej strony możliwe jest, że wybrany zbiór testowy jest szczególnie trudny do przewidywania.
+		Przewidywanie ceny niewolnika wymaga wielu parametrów i jest obarczone dużym błędem, należy się spodziewać, że znaczny wpływ na cenę miały niepodane dane jak wzrost, waga. Otrzymana wartość MSE względem ilości prób testowych pokazuje wzrost błędu dla przypadku testowego względem walidacyjnego. Oznacza to, że model ma pewne problemy z generalizowaniem zagadnienia pomimo wykorzystania zbioru walidacyjnego.
 		
 \section{Uruchomienie}
 	\subsection{Pliki}

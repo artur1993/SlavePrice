@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.preprocessing import PolynomialFeatures
 import numpy as np
 from sklearn.model_selection import cross_val_score, learning_curve
+from sklearn.ensemble import RandomForestRegressor
 
 import LoadDataSet
 
@@ -53,7 +54,7 @@ def plot_learning_curve(model, title, X, y, ylim=None, cv=None,
     if ylim is not None:
         plt.ylim(*ylim)
     plt.xlabel("Training examples")
-    plt.ylabel("Score")
+    plt.ylabel("error")
     train_sizes, train_scores, test_scores = learning_curve(
         model, X, y, cv=cv, n_jobs=n_jobs, train_sizes=train_sizes, scoring='mean_squared_error')
     train_scores_mean = np.mean(train_scores, axis=1)
@@ -73,13 +74,14 @@ def plot_learning_curve(model, title, X, y, ylim=None, cv=None,
              label="Cross-validation score")
 
     plt.legend(loc="best")
+
     return plt
 
 path = 'AER_2013_1483_data/CalomirisPritchett_data.xlsx'
 cross_validation_iteration = 5
 # pass the order of your polynomial here
 
-poly_sex = PolynomialFeatures(6)
+poly_age = PolynomialFeatures(6)
 poly_sax_age = PolynomialFeatures(3)
 
 # Load the diabetes dataset
@@ -87,9 +89,9 @@ slave_data = LoadDataSet.return_data(path)["train"]
 train_end = int(slave_data.shape[0]*0.8)
 Y = slave_data['Price']
 # convert to be used further to linear regression
-# X = poly.fit_transform(slave_data[['Age']].as_matrix())
+# X = poly_age.fit_transform(slave_data[['Age']].as_matrix())
 # X = np.c_[poly.fit_transform(slave_data[['Age']].as_matrix()), slave_data[['Sex']].as_matrix()]
-X = np.c_[poly_sex.fit_transform(slave_data[['Age']].as_matrix()), poly_sax_age.fit_transform(slave_data[['Age_Sex']].as_matrix()),
+X = np.c_[poly_age.fit_transform(slave_data[['Age']].as_matrix()), poly_sax_age.fit_transform(slave_data[['Age_Sex']].as_matrix()),
           slave_data[['Sex']].as_matrix(), slave_data[['Sales Date']].as_matrix(), slave_data[['Buyers County of Origin']].as_matrix(),
           slave_data[['Sellers County of Origin']].as_matrix(), slave_data[['Color']].as_matrix()]
 # diabetes_X = np.c_[poly.fit_transform(slave_data[['Age']].as_matrix()), poly2.fit_transform(slave_data[['Age_Sex']].as_matrix()), slave_data[['Sex']].as_matrix(), poly2.fit_transform(slave_data[['Sales Date']].as_matrix()), slave_data[['Sellers County of Origin']].as_matrix(), slave_data[['Buyers County of Origin']].as_matrix()]
@@ -105,6 +107,8 @@ y_valid = Y[train_end:]
 
 # Create linear regression object
 regr = LinearRegression()
+# regr = Lasso(alpha=0.5)
+# regr = RandomForestRegressor()
 
 # Train the model using the training sets
 regr.fit(X_train, y_train)

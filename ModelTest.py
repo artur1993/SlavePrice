@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import PolynomialFeatures
+from sklearn.ensemble import RandomForestRegressor
 import LoadDataSet
 
 path = 'AER_2013_1483_data/CalomirisPritchett_data.xlsx'
@@ -24,6 +25,7 @@ X_test_plot = slave_data_test[['Age']]
 
 # Create linear regression object
 regr = LinearRegression()
+# regr = RandomForestRegressor()
 
 # Train the model using the training sets
 regr.fit(X, Y)
@@ -40,6 +42,10 @@ print('Variance score: %.2f' % r2_score(Y_test, y_pred))
 print("Mean squared error: %.2f on slave"
       % (mean_squared_error(Y_test, y_pred)/len(Y_test)))
 
+plt.hist((Y_test - y_pred)*(Y_test - y_pred))
+plt.xlabel('error')
+plt.ylabel('amount')
+plt.show()
 # Plot outputs
 x_max = max(int(X_test_plot.max()), int(X_test_plot.max()))
 y_max = max(int(Y_test.max()), int(y_pred.max()))
